@@ -1,0 +1,9 @@
+cd linux
+make ARCH=arm licheepi_zero_defconfig
+OR
+make sunxi_defconfig ARCH=arm
+
+make ARCH=arm menuconfig 
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j8
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j8 INSTALL_MOD_PATH=out modules
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j8 INSTALL_MOD_PATH=out modules_install
