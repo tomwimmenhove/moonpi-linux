@@ -1,7 +1,6 @@
-cd linux
-make ARCH=arm licheepi_zero_defconfig
-OR
-make sunxi_defconfig ARCH=arm
+Cross compiler:
+Chain from:
+ - gcc-linaro-6.3.1-2017.05-x86_64_arm-linux-gnueabihf
 
 make ARCH=arm menuconfig 
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j8
