@@ -96,7 +96,7 @@
 &emac {
     phy-handle = <&int_mii_phy>;
     phy-mode = "mii";
-    allwinner,leds-active-low;
+    allwinner,leds-active-high;
     status = "okay";
 };
 
