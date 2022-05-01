@@ -616,14 +616,19 @@ static void sun8i_dwmac_set_mac(void __iomem *ioaddr, bool enable)
 {
 	u32 t, r;
 
+	if (!enable)
+	{
+		return;
+	}
+
 	t = readl(ioaddr + EMAC_TX_CTL0);
 	r = readl(ioaddr + EMAC_RX_CTL0);
 	if (enable) {
 		t |= EMAC_TX_TRANSMITTER_EN;
 		r |= EMAC_RX_RECEIVER_EN;
 	} else {
-		t &= ~EMAC_TX_TRANSMITTER_EN;
-		r &= ~EMAC_RX_RECEIVER_EN;
+//		t &= ~EMAC_TX_TRANSMITTER_EN;
+//		r &= ~EMAC_RX_RECEIVER_EN;
 	}
 	writel(t, ioaddr + EMAC_TX_CTL0);
 	writel(r, ioaddr + EMAC_RX_CTL0);

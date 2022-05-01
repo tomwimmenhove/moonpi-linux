@@ -143,6 +143,10 @@ static void stmmac_exit_fs(struct net_device *dev);
 
 #define STMMAC_COAL_TIMER(x) (ns_to_ktime((x) * NSEC_PER_USEC))
 
+#if IS_ENABLED(CONFIG_STMMAC_INIT_ONCE_HACK)
+static int init_once_hack = 0;
+#endif
+
 int stmmac_bus_clks_config(struct stmmac_priv *priv, bool enabled)
 {
 	int ret = 0;
@@ -918,11 +922,13 @@ static int stmmac_init_ptp(struct stmmac_priv *priv)
 	return 0;
 }
 
+#if !IS_ENABLED(CONFIG_STMMAC_INIT_ONCE_HACK)
 static void stmmac_release_ptp(struct stmmac_priv *priv)
 {
 	clk_disable_unprepare(priv->plat->clk_ptp_ref);
 	stmmac_ptp_unregister(priv);
 }
+#endif
 
 /**
  *  stmmac_mac_flow_ctrl - Configure flow control in all queues
@@ -3699,6 +3705,15 @@ static int stmmac_open(struct net_device *dev)
 	u32 chan;
 	int ret;
 
+#if IS_ENABLED(CONFIG_STMMAC_INIT_ONCE_HACK)
+	if (init_once_hack)
+	{
+		return 0;
+	}
+
+	init_once_hack = 1;
+#endif
+
 	ret = pm_runtime_get_sync(priv->device);
 	if (ret < 0) {
 		pm_runtime_put_noidle(priv->device);
@@ -3818,6 +3833,7 @@ static void stmmac_fpe_stop_wq(struct stmmac_priv *priv)
  */
 static int stmmac_release(struct net_device *dev)
 {
+#if !IS_ENABLED(CONFIG_STMMAC_INIT_ONCE_HACK)
 	struct stmmac_priv *priv = netdev_priv(dev);
 	u32 chan;
 
@@ -3859,6 +3875,7 @@ static int stmmac_release(struct net_device *dev)
 
 	if (priv->dma_cap.fpesel)
 		stmmac_fpe_stop_wq(priv);
+#endif
 
 	return 0;
 }
